@@ -1,0 +1,14 @@
+<li class="uv_option">
+	<div class="uv_option_content">
+		<%= option.content %>
+	</div>
+	<div class="uv_option_choose" id='uv_option_<%= itemIndex %>_<%= optionIndex %>'
+			 ontouchend="choose(<%= itemIndex %>,<%= optionIndex %>)"
+		></div>
+	<div style="clear:both"></div>
+	<% if (option.imgPath != 'none'){ %>
+	<div class="uv_option_img">
+		<img src="/images/<%= option.imgPath %>"/>
+	</div>
+	<% } %>
+</li>

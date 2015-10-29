@@ -1,0 +1,39 @@
+{
+  "name": "weixin-vote",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-header-footer": "0.0.3",
+    "gulp-less": "^3.0.3",
+    "gulp-livereload": "^3.8.1",
+    "gulp-react": "^3.1.0",
+    "redux-devtools": "^2.1.5"
+  },
+  "dependencies": {
+    "co-busboy": "^1.3.1",
+    "co-multipart": "^2.0.0",
+    "formidable": "^1.0.17",
+    "koa": "^1.1.0",
+    "koa-bodyparser": "^2.0.1",
+    "koa-csrf": "^2.3.0",
+    "koa-ejs": "^2.0.1",
+    "koa-router": "^5.2.3",
+    "koa-session": "^3.3.1",
+    "koa-static": "^1.5.1",
+    "md5": "^2.0.0",
+    "mongoose": "^4.1.10",
+    "react": "^0.14.0",
+    "react-redux": "^4.0.0",
+    "redux": "^3.0.2",
+    "wechat-oauth": "^1.1.0"
+  }
+}

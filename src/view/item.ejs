@@ -1,0 +1,19 @@
+<div class="uv_item">
+	<div class="uv_item_title">
+			<span class="uv_item_title_1">
+				<%= item.title %>
+			</span>
+		<span class="uv_item_title_2">
+			<% if (item.limit == 1) { %>
+			<%= "-" + item.method %>
+			<% } else { %>
+			<%= "-" + item.method + "(最多选" + item.limit + "项)" %>
+			<% } %>
+		</span>
+	</div>
+	<ul>
+		<% item.option.forEach(function(option, optionIndex){ %>
+		<% include option %>
+		<% }) %>
+	</ul>
+</div>

@@ -1,0 +1,45 @@
+<div id="vote">
+    <div id="uv_title"><%=data.title%></div>
+    <div id="uv_content"><%=data.content%></div>
+    <div id="uv_item_list">
+        <div id="uv_item_wrapper">
+            <% data.item.forEach(function(item, itemIndex){ %>
+            <% include item %>
+            <% }) %>
+        </div>
+    </div>
+    <div id="uv_submit">提交</div>
+</div>
+<script src="//cdn.bootcss.com/jquery/3.0.0-alpha1/jquery.js"></script>
+<script type="text/javascript">
+    var global = [];
+    var voteKey = '<%=data.voteKey%>';
+    for (var i = 0; i < parseInt('<%=data.item.length%>'); i++) {
+        global[i] = new Array();
+    }
+    function choose(i, o) {
+        global[i][o] = 0;
+        if ($('#uv_option_' + i + '_' + o).css('background-color') !== 'rgb(206, 53, 55)') {
+            $('#uv_option_' + i + '_' + o).css({"background-color": '#ce3537'});
+        } else {
+            //choose
+            global[i][o] = 1;
+            $('#uv_option_' + i + '_' + o).css({"background-color": '#22ab95'});
+        }
+    }
+
+    $('#uv_submit').click(function () {
+        $.ajax({
+            method: 'POST',
+            url: "/v/" + voteKey,
+            data: {data: JSON.stringify(global)},
+            success: function (obj) {
+                var location = obj.msg + '?data=' + JSON.stringify(global);
+                window.location = location;
+            },
+            error: function (obj) {
+                alert(obj.responseJSON.msg);
+            }
+        })
+    });
+</script>

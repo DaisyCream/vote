@@ -1,0 +1,245 @@
+<div>
+    <div>
+        <h1>现有投票</h1>
+    </div>
+    <p style="width: 100%; border-bottom: 2px solid #ccc"></p>
+
+    <div style="width: 46%; float: left; margin-left: 4%">
+        <h1>新建投票</h1>
+        <input placeholder="投票标题" name="title" id="title"/><br/>
+        <input placeholder="投票介绍" name="content" id="content"/><br/>
+        <input placeholder="每人投票周期(默认24h)" name="limittime" id="limittime"/>输入如: 24<br/>
+
+        <p>添加项目</p>
+        <input placeholder="标题" id="itemtitle"><br/>
+        <input placeholder="选择上限(1代表单选)" id="chooselimit">输入如 3
+        <br/>
+        <button id="addOption">添加选项</button>
+        <br/>
+        <br/>
+        <button id="addItem">添加项目</button>
+        <br/>
+        <br/>
+        <br/>
+        <button id="addVote">新建投票</button>
+    </div>
+    <div style="width: 50%; float: right;">
+        <p id="v_title"></p>
+
+        <p id="v_content"></p>
+
+        <p id="v_hours"></p>
+
+        <div id="itemlist"></div>
+    </div>
+    <div id="optionBlock" style="display: none;">
+        <div class="block">
+            <h1>添加选项</h1>
+            <button id="uploadFile">添加图片</button>
+            <span id="filename"></span></br>
+            <p>图片可以不上传但是内容必须添加</p>
+            <input type="text" id="optionContent" name="content" placeholder="选项内容"/>
+            <input type="button" id="btnUpload" value="添加"/>
+        </div>
+    </div>
+</div>
+<script src="//cdn.bootcss.com/jquery/3.0.0-alpha1/jquery.js"></script>
+<script src="/js/plupload-2.1.8/js/plupload.full.min.js"></script>
+<script type="text/javascript">
+    var global = {
+        title: '',
+        content: '',
+        hours: '',
+        item: []
+    };
+    var nowItem = {
+        title: '',
+        limit: 1,
+        option: [],
+        haveAdd: false
+    };
+    $("#addVote").click(function () {
+        $.ajax({
+            method: 'POST',
+            url: "/vote/add",
+            data: {data: JSON.stringify(global)},
+            success: function (obj) {
+                window.location = '/clgxtmain';
+            },
+            error: function () {
+                alert('添加失败');
+            }
+        });
+    });
+    $("#addItem").click(function () {
+        if (!nowItem.haveAdd) {
+            return alert('请添加标题');
+        }
+        global.item.push({
+            title: nowItem.title,
+            limit: nowItem.limit,
+            option: nowItem.option
+        });
+        nowItem = {
+            title: '',
+            limit: 1,
+            option: [],
+            haveAdd: false
+        };
+        $('#itemtitle').val('');
+        $('#chooselimit').val('');
+    });
+    $('#itemtitle').change(function (e) {
+        if (!nowItem.haveAdd) {
+            nowItem.haveAdd = true;
+            $('#itemlist').append(
+                    "<div class='v_item' id='v_item" + (global.item.length + 1) + "'>项目" + (global.item.length + 1) +
+                    "<p>标题：" + $(e.target)[0].value + "</p>" +
+                    "<p>选择上限：" + nowItem.limit + "</p>" + "</div>"
+            );
+        } else {
+            $($("#v_item" + (global.item.length + 1)).children()[0]).html("标题：" + $(e.target)[0].value);
+        }
+        nowItem.title = $(e.target)[0].value;
+    });
+    $('#chooselimit').change(function (e) {
+        if (!nowItem.haveAdd) {
+            nowItem.haveAdd = true;
+            $('#itemlist').append(
+                    "<div class='v_item' id='v_item" + (global.item.length + 1) + "'>项目" + (global.item.length + 1) +
+                    "<p>标题：" + nowItem.title + "</p>" +
+                    "<p>选择上限：" + $(e.target)[0].value + "</p>" + "</div>"
+            );
+        } else {
+            $($("#v_item" + (global.item.length + 1)).children()[1]).html("选择上限：" + $(e.target)[0].value);
+        }
+        nowItem.limit = $(e.target)[0].value;
+    });
+    $('#title').change(function (e) {
+        global.title = $(e.target)[0].value;
+        $('#v_title').html("标题：" + global.title);
+    });
+    $('#content').change(function (e) {
+        global.content = $(e.target)[0].value;
+        $('#v_content').html("介绍：" + global.content);
+    });
+    $('#limittime').change(function (e) {
+        global.hours = $(e.target)[0].value;
+        $('#v_hours').html("每人投票周期：" + global.hours + "小时");
+    });
+    $('#addOption').click(function () {
+        if (!nowItem.haveAdd) {
+            return alert('请先填上项目标题');
+        }
+        $('#optionBlock').css({display: 'block'});
+    });
+    $('#optionBlock').click(function (e) {
+        if (e.target.id == 'optionBlock') {
+            $('#optionBlock').css({display: 'none'});
+        }
+    });
+    $(document).ready(function () {
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            container: 'optionBlock',
+            max_file_size: '20mb',
+            browse_button: 'uploadFile',
+            url: "/option/add",
+            multipart_params: {
+                content: $("#optionContent").val()
+            },
+            flash_swf_url: 'http://rawgithub.com/moxiecode/moxie/master/bin/flash/Moxie.cdn.swf',
+            silverlight_xap_url: 'http://rawgithub.com/moxiecode/moxie/master/bin/silverlight/Moxie.cdn.xap',
+            filters: [
+                {title: "Image files", extensions: "jpg,gif,png"},
+                {title: "Zip files", extensions: "zip"}
+            ],
+
+            init: {
+                PostInit: function () {
+                    $('#btnUpload').click(function () {
+                        uploader.setOption({
+                            multipart_params: {
+                                content: $("#optionContent").val()
+                            }
+                        });
+                        if (uploader.files.length == 0) {
+                            $.ajax({
+                                method: 'POST',
+                                url: "/option/add?type=just",
+                                data: {content: $('#optionContent').val()},
+                                success: function (obj) {
+                                    var content = $('#optionContent').val();
+                                    nowItem.option.push({
+                                        content: content,
+                                        picPath: obj.picPath,
+                                        key: obj.key
+                                    });
+                                    if (obj.picPath == 'none') {
+                                        $('#v_item' + (global.item.length + 1)).append(
+                                                "<div>" + nowItem.option.length + "." + content + "</div>"
+                                        );
+                                    } else {
+                                        $('#v_item' + (global.item.length + 1)).append(
+                                                "<div>" + nowItem.option.length + "." + content + "<img src='" + '/images/' + obj.picPath + "'/></div>"
+                                        );
+                                    }
+                                },
+                                error: function () {
+                                    alert('添加错误!');
+                                }
+                            });
+                        } else {
+                            uploader.start();
+                        }
+                        return false;
+                    });
+                },
+
+                FilesAdded: function (up, files) {
+                    if (up.files.length > 1) {
+                        up.splice(0, 1);
+                    }
+                    $('#filename').html(files[0].name);
+                },
+
+                BeforeUpload: function () {
+                    $('#filename').html("上传中");
+                },
+
+                FileUploaded: function (up, file, responseObject) {
+                    if (responseObject.status == 200) {
+                        var content = $("#optionContent").val();
+                        $('#filename').html("上传完成，请重新选择");
+                        up.removeFile(up.files[0]);
+                        var obj = JSON.parse(responseObject.response);
+                        nowItem.option.push({
+                            content: content,
+                            picPath: obj.picPath,
+                            key: obj.key
+                        });
+                        if (obj.picPath == 'none') {
+                            $('#v_item' + (global.item.length + 1)).append(
+                                    "<div>" + nowItem.option.length + "." + content + "</div>"
+                            );
+                        } else {
+                            $('#v_item' + (global.item.length + 1)).append(
+                                    "<div>" + nowItem.option.length + "." + content + "<img src='" + '/images/' + obj.picPath + "'/></div>"
+                            );
+                        }
+
+                    } else {
+                        $('#filename').html("上传失败，请重新选择");
+                        up.removeFile(up.files[0]);
+                    }
+                },
+
+                Error: function (up, err) {
+                    $('#filename').html("上传失败，请重新选择");
+                }
+            }
+        });
+        uploader.init();
+    });
+</script>
