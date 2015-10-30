@@ -143,16 +143,18 @@ exports.uservote = function *() {
         data,
         voteKey
     };
-    var url = client.getAuthorizeURL(config.rurl);
+    var url = client.getAuthorizeURL(config.rurl, '', 'snsapi_userinfo');
     console.log(url);
     this.redirect(url);
 };
 
 exports.useroauth = function *() {
-    this.body = this.query;
-    return;
-    var cb = new Promise(resolve=> {
-        client.getAccessToken('code', function (err, result) {
+    //this.body = this.query;
+    //return;
+    console.log(this.query);
+    var code = this.query.code;
+    var cb = yield new Promise(resolve=> {
+        client.getAccessToken(code, function (err, result) {
             var accessToken = result.data.access_token;
             var openid = result.data.openid;
             if (err) {
