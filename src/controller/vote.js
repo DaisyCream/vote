@@ -135,7 +135,7 @@ exports.check = function *() {
 
 
 exports.uservote = function *() {
-    var url = client.getAuthorizeURL(config.rurl, 'STATE', 'snsapi_userinfo');
+    var url = client.getAuthorizeURL(config.rurl, 'STATE', 'snsapi_base');
     this.redirect(url);
 };
 
