@@ -135,13 +135,15 @@ exports.check = function *() {
 
 
 exports.uservote = function *() {
-    var url = client.getAuthorizeURL(config.rurl, 'state', 'snsapi_userinfo');
+    var url = client.getAuthorizeURL(config.rurl, 'STATE', 'snsapi_userinfo');
     this.redirect(url);
 };
 
 exports.useroauth = function *() {
     var cb = new Promise(resolve=> {
-        client.getUser('openid', function (err, result) {
+        client.getAccessToken('code', function (err, result) {
+            var accessToken = result.data.access_token;
+            var openid = result.data.openid;
             if (err) {
                 cb(false);
             } else {
