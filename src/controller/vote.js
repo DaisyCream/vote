@@ -8,9 +8,10 @@
 var formidable = require('formidable');
 var multipart = require('co-multipart');
 var proxy = require('../proxy');
+var config = require('../config');
 var fs = require('fs');
 var OAuth = require('wechat-oauth');
-var client = new OAuth('your appid', 'your secret');
+var client = new OAuth(config.appid, config.skey);
 
 exports.fn = function *() {
     yield this.render('main', {title: 'main'});
@@ -134,12 +135,19 @@ exports.check = function *() {
 
 
 exports.uservote = function *() {
-    var url = client.getAuthorizeURL('redirectUrl', 'state', 'snsapi_userinfo');
+    var url = client.getAuthorizeURL(config.rurl, 'state', 'snsapi_userinfo');
     this.redirect(url);
 };
 
 exports.useroauth = function *() {
-    client.getUser('openid', function (err, result) {
-        var userInfo = result;
+    var cb = new Promise(resolve=> {
+        client.getUser('openid', function (err, result) {
+            if (err) {
+                cb(false);
+            } else {
+                cb(result);
+            }
+        });
     });
+    this.body = cb;
 };

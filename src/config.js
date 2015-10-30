@@ -15,5 +15,8 @@ module.exports = {
     },
     private: {
         salt: 'weixin-vote'
-    }
+    },
+    rurl: 'http://www.doubleeggs.com:8656/v/w',
+    appid:'',
+    skey:''
 };
