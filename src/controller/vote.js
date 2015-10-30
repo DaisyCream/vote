@@ -143,6 +143,7 @@ exports.uservote = function *() {
         voteKey
     };
     var url = client.getAuthorizeURL(config.rurl, 'STATE', 'snsapi_base');
+    console.log(url);
     this.redirect(url);
 };
 
