@@ -135,11 +135,20 @@ exports.check = function *() {
 
 
 exports.uservote = function *() {
+    var data = new Array(JSON.parse(this.query.data));
+    data = data[0];
+    var voteKey = this.params.key;
+    var obj = {
+        data,
+        voteKey
+    };
     var url = client.getAuthorizeURL(config.rurl, 'STATE', 'snsapi_base');
     this.redirect(url);
 };
 
 exports.useroauth = function *() {
+    this.body = this.query;
+    return;
     var cb = new Promise(resolve=> {
         client.getAccessToken('code', function (err, result) {
             var accessToken = result.data.access_token;

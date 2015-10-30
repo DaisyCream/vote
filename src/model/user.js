@@ -10,8 +10,8 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
         userKey: String,
-        voteID: Schema.Types.ObjectId,
-        chooseItem: [Number],
+        voteKey: String,
+        chooseItem: String,
         submitTime: String
     },
     {collection: 'User'}
