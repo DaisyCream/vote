@@ -16,7 +16,7 @@ module.exports = {
     private: {
         salt: 'weixin-vote'
     },
-    rurl: 'http://www.doubleeggs.com:8656/v/w',
-    appid:'',
-    skey:''
+    rurl: 'http://clgxt.hirube.com/v/w',
+    appid:'wx9615bef73ce061be',
+    skey:'a257d509fe5d32290b177a7fa0048808'
 };

@@ -12,6 +12,7 @@ var config = require('../config');
 var fs = require('fs');
 var OAuth = require('wechat-oauth');
 var client = new OAuth(config.appid, config.skey);
+var haveGetTooken = false;
 
 exports.fn = function *() {
     yield this.render('main', {title: 'main'});
@@ -142,7 +143,7 @@ exports.uservote = function *() {
         data,
         voteKey
     };
-    var url = client.getAuthorizeURL(config.rurl, 'STATE', 'snsapi_base');
+    var url = client.getAuthorizeURL(config.rurl);
     console.log(url);
     this.redirect(url);
 };
